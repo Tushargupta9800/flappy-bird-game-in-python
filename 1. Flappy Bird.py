@@ -1,10 +1,17 @@
+#by - Tushar Gupta
+#about me:- undergraduate in IT at Indian Institute of information Technology, Allahabad
+#classic flappy bir game in python using pygame
+
+#importing the pygame library
 import pygame
 pygame.init()
 from random import randint
-win = pygame.display.set_mode((900,480))
 
+#making the window
+win = pygame.display.set_mode((900,480))
 pygame.display.set_caption("Flappy Bird")
 
+#importing the artwork
 bird = [pygame.image.load('data/birdup.png'),pygame.image.load('data/birdup.png'),pygame.image.load('data/birdown.png'),pygame.image.load('data/birdown.png')]
 pipe = [pygame.image.load('data/pipeup.png'),pygame.image.load('data/pipedown.png')]
 gameover = [pygame.image.load('data/gameover.jpg')]
@@ -12,12 +19,14 @@ bk = [pygame.image.load('data/flappybk.png')]
 boomer = [pygame.image.load('data/boomer.png')]
 clock = pygame.time.Clock()
 
+#loading the sound
 boom = pygame.mixer.Sound('data/boom.wav')
 music = pygame.mixer.music.load('data/bkmusic.mp3')
 pygame.mixer.music.play(-1)
 
 score = 0
 
+#player class
 class player(object):
     def __init__ (self, x, y, direction):
         self.x = x
@@ -27,6 +36,7 @@ class player(object):
     def draw(self,win):
         win.blit(bird[self.direction], (self.x,self.y))
 
+# class for pipes
 class pipemove(object):
     def __init__ (self, x, y1, y2):
         self.x = x
@@ -38,9 +48,7 @@ class pipemove(object):
         win.blit(pipe[1], (self.x,self.y1))
         win.blit(pipe[0], (self.x,self.y2))
         
-    
-
-
+#drawing the window    
 def redraw():
     win.blit(bk[0], (0,0))
     for blah in obstacle:
@@ -50,6 +58,7 @@ def redraw():
     win.blit(text, (750, 10))
     pygame.display.update()
 
+#printing the over screen
 def over():
     win.blit(gameover[0], (205,145))
     fontis = pygame.font.SysFont('comiccsans', 50)
@@ -73,6 +82,8 @@ def over():
 
 
 #main loop
+
+#defining variables
 pipe0 = pipemove(705, 0, 370)
 obstacle = [pipe0]
 khiladi = player(200, 240, 0)
@@ -82,6 +93,8 @@ run = False
 jump = False
 gravity = True
 redraw()
+
+#menu page
 while not(run):
     text3 = fonter.render('Made by:- Tushar Gupta',1, (255, 255, 255))
     text = fonter.render('Press p to play and q to quit',1, (255, 255, 255))
@@ -102,6 +115,8 @@ while not(run):
         pygame.quit()
         
 j = 0
+
+#game loop
 while run:
     clock.tick(30)
     for _ in range(10):
@@ -112,11 +127,13 @@ while run:
             run = False
 
     i = 5
+    #moving pipes
     for blah in obstacle:
         blah.x -= i
         if blah.x ==khiladi.x:
             score +=1
-
+        
+        #checking collision of the sprite with the pipes
         if khiladi.x + 50 > blah.x and khiladi.x < blah.x + 82:
             if khiladi.y + 42 > blah.y2 or khiladi.y < blah.y2 - 135:
                 boom.play()
@@ -141,8 +158,10 @@ while run:
             else:
                 obstacle.append(pipemove(900, -130, 240))
 
+    #getting the input
     keys = pygame.key.get_pressed()
 
+    #defining the jump
     if keys[pygame.K_SPACE]:
         jump = True
         j = 10
@@ -158,10 +177,12 @@ while run:
             jump = False
             gravity = True
 
+    #defining gravity
     if gravity:
         khiladi.y += 6
 
 
+    #checking the collision with thw boundaries
     if khiladi.y > 440 or khiladi.y < 0:
         boom.play()
         pygame.time.delay(1200)
@@ -176,6 +197,8 @@ while run:
         obstacle = [pipe0]
         khiladi.y = 240
 
+    #drawing the screen
     redraw()
 
 pygame.quit()
+#end
